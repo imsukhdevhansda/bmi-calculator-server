@@ -35,7 +35,7 @@ userRouter.post("/login", async (req, res) => {
 
       let user = await UserModel.findOne({ email });
       if (user) {
-        let token = jwt.sign({ UserId: user._id }, "annoy");
+        let token = jwt.sign({ UserId: user._id,email,name:user.name }, "annoy");
 
         res.send({ res: "Login Successful", token });
       } else {
