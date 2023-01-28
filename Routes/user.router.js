@@ -52,6 +52,98 @@ userRouter.post("/login", async (req, res) => {
 
 
 
+userRouter.get("/getProfile", async (req,res)=>{
+  // console.log(req.headers.token)
+  let token = req.headers.token;
+
+  try{
+     var decoded = jwt.verify(token, "annoy");
+    //  console.log(decoded)
+     let {UserId} = decoded;
+
+     let userDetails = await UserModel.findOne({UserId})
+    //  console.log(userDetails)
+     res.send({res:{
+      "name" : userDetails.name,
+      "email" : userDetails.email
+     }})
+  }
+
+  catch(err){
+     res.send({ res: "Something went wrong somewhere" });
+     console.log(err);
+
+  }
+
+
+
+});
+
+
+
+userRouter.get("/calculateBMI", async(req,res)=>{
+  let {height,weight} = req.body;
+    let token = req.headers.token;
+  // console.log(req.body)
+
+  try{
+    let heightInMeter = height/3
+    heightInMeter = heightInMeter.toFixed(2)
+    // console.log( "Height :", heightInMeter)
+    let bmi = weight / heightInMeter;
+    bmi = bmi.toFixed(2)
+      // console.log( "bmi :", bmi);
+
+     let decoded = jwt.verify(token, "annoy");
+    //  console.log(decoded)
+     let {UserId} = decoded;
+
+     let userDetails = await UserModel.findOne({UserId})
+     let { bmiHistory } = userDetails;
+     let data = {height,weight,bmi}
+      bmiHistory.push(data)
+        // console.log(userDetails);
+
+        await UserModel.findByIdAndUpdate({_id:UserId},userDetails);
+         res.status(200).send({ res : bmi});
+
+  }
+  catch(err){
+    res.send({ res: "Something went wrong somewhere" });
+    console.log(err);
+
+  }
+
+
+} );
+
+
+
+
+userRouter.get("/getCalculation", async(req,res)=>{
+      let token = req.headers.token;
+
+  try{
+    let decoded = jwt.verify(token, "annoy");
+    let { UserId } = decoded;
+
+    let userDetails = await UserModel.findOne({ UserId });
+    console.log(userDetails);
+    res.send({bmiHistory:  userDetails.bmiHistory})
+  }
+  catch(err){
+       res.send({ res: "Something went wrong somewhere" });
+       console.log(err);
+
+
+  }
+
+
+} );
+
+
+
+
 
 
 module.exports = userRouter;
