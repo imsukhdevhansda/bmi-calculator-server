@@ -58,9 +58,10 @@ userRouter.get("/getProfile", async (req, res) => {
     var decoded = jwt.verify(token, "annoy");
     //  console.log(decoded)
     let { UserId } = decoded;
+    // console.log("userID :", UserId);
 
-    let userDetails = await UserModel.findOne({ UserId });
-    //  console.log(userDetails)
+    let userDetails = await UserModel.findOne({ _id:UserId });
+    //  console.log( userDetails)
     res.send({
       res: {
         name: userDetails.name,
@@ -90,7 +91,7 @@ userRouter.get("/calculateBMI", async (req, res) => {
     //  console.log(decoded)
     let { UserId } = decoded;
 
-    let userDetails = await UserModel.findOne({ UserId });
+    let userDetails = await UserModel.findOne({ _id:UserId });
     let { bmiHistory } = userDetails;
     let data = { height, weight, bmi };
     bmiHistory.push(data);
@@ -111,7 +112,7 @@ userRouter.get("/getCalculation", async (req, res) => {
     let decoded = jwt.verify(token, "annoy");
     let { UserId } = decoded;
 
-    let userDetails = await UserModel.findOne({ UserId });
+    let userDetails = await UserModel.findOne({ _id:UserId });
     // console.log(userDetails);
     res.send({ bmiHistory: userDetails.bmiHistory });
   } catch (err) {
