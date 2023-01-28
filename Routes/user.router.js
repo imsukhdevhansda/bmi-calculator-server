@@ -76,6 +76,8 @@ userRouter.get("/getProfile", async (req, res) => {
 
 userRouter.get("/calculateBMI", async (req, res) => {
   let { height, weight } = req.body;
+  height = Number(height);
+  weight = Number(weight)
   let token = req.headers.token;
   // console.log(req.body)
 
